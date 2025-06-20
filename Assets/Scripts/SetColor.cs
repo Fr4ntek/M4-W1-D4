@@ -7,11 +7,14 @@ public class SetColor : MonoBehaviour
     private ColorManager _colorManager;
     private Renderer _renderer;
     private Color _defaultColor;
+    private Camera _cam;
+
     void Start()
     {
         _renderer = GetComponent<Renderer>();
         _colorManager = FindObjectOfType<ColorManager>();
         _defaultColor = _renderer.material.color;
+        _cam = Camera.main;
 
     }
 
@@ -21,11 +24,17 @@ public class SetColor : MonoBehaviour
         {
             _renderer.material.SetColor("_BaseColor", _defaultColor);
         }
-    }
 
-    private void OnMouseDown()
-    {
-        _renderer.material.color = _colorManager.Renderer.material.color;
+        if(Input.GetMouseButton(0))
+        {
+            Vector3 mousePos = Input.mousePosition;
+            Ray ray = _cam.ScreenPointToRay(mousePos);
+            if(Physics.Raycast(ray, out RaycastHit hit))
+            {
+                hit.collider.gameObject.GetComponent<Renderer>().material.color = _colorManager.Renderer.material.color;
+            }
+
+        }
     }
    
 }
